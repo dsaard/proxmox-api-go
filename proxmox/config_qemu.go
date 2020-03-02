@@ -65,6 +65,7 @@ type ConfigQemu struct {
 	CIuser     string `json:"ciuser"`
 	CIpassword string `json:"cipassword"`
 	CIcustom   string `json:"cicustom"`
+	CItype   string `json:"citype"`
 
 	Searchdomain string `json:"searchdomain"`
 	Nameserver   string `json:"nameserver"`
@@ -159,6 +160,7 @@ func (config ConfigQemu) HasCloudInit() bool {
 		config.Sshkeys != "" ||
 		config.Ipconfig0 != "" ||
 		config.Ipconfig1 != "" ||
+		config.CItype != "" ||
 		config.CIcustom != ""
 }
 
@@ -284,6 +286,9 @@ func (config ConfigQemu) UpdateConfig(vmr *VmRef, client *Client) (err error) {
 	}
 	if config.CIcustom != "" {
 		configParams["cicustom"] = config.CIcustom
+	}
+	if config.CItype != "" {
+		configParams["citype"] = config.CItype
 	}
 	if config.Searchdomain != "" {
 		configParams["searchdomain"] = config.Searchdomain
@@ -502,6 +507,9 @@ func NewConfigQemuFromApi(vmr *VmRef, client *Client) (config *ConfigQemu, err e
 	}
 	if _, isSet := vmConfig["cicustom"]; isSet {
 		config.CIcustom = vmConfig["cicustom"].(string)
+	}
+	if _, isSet := vmConfig["citype"]; isSet {
+		config.CItype = vmConfig["citype"].(string)
 	}
 	if _, isSet := vmConfig["searchdomain"]; isSet {
 		config.Searchdomain = vmConfig["searchdomain"].(string)
